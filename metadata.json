@@ -1,0 +1,6 @@
+{
+  "name": "LakshyaMirror - Complete Exam Prep & Error Analytics",
+  "description": "Comprehensive exam preparation roadmap, hierarchical syllabus tracking, test engine with image MCQs, weakness & error analytics mirror, and admin curriculum manager.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

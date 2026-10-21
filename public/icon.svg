@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a" />
+      <stop offset="50%" stop-color="#1e1b4b" />
+      <stop offset="100%" stop-color="#311042" />
+    </linearGradient>
+    <linearGradient id="brandGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6366f1" />
+      <stop offset="50%" stop-color="#a855f7" />
+      <stop offset="100%" stop-color="#ec4899" />
+    </linearGradient>
+    <linearGradient id="accentGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#10b981" />
+      <stop offset="100%" stop-color="#06b6d4" />
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="16" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- Background with Safe Margin for Maskable Android Icon -->
+  <rect width="512" height="512" rx="110" fill="url(#bgGrad)" />
+
+  <!-- Outer Pulse Ring -->
+  <circle cx="256" cy="256" r="160" fill="none" stroke="url(#brandGrad)" stroke-width="12" stroke-dasharray="24 12" opacity="0.6" />
+
+  <!-- Center Target Circles -->
+  <circle cx="256" cy="256" r="115" fill="none" stroke="#6366f1" stroke-width="16" opacity="0.8" />
+  <circle cx="256" cy="256" r="70" fill="url(#brandGrad)" opacity="0.25" />
+  <circle cx="256" cy="256" r="45" fill="url(#brandGrad)" filter="url(#glow)" />
+  <circle cx="256" cy="256" r="18" fill="#ffffff" />
+
+  <!-- Crosshairs / Radar Arrows -->
+  <line x1="256" y1="60" x2="256" y2="110" stroke="#a855f7" stroke-width="8" stroke-linecap="round" />
+  <line x1="256" y1="402" x2="256" y2="452" stroke="#a855f7" stroke-width="8" stroke-linecap="round" />
+  <line x1="60" y1="256" x2="110" y2="256" stroke="#a855f7" stroke-width="8" stroke-linecap="round" />
+  <line x1="402" y1="256" x2="452" y2="256" stroke="#a855f7" stroke-width="8" stroke-linecap="round" />
+
+  <!-- Success check accent -->
+  <path d="M340 180 L360 200 L400 155" fill="none" stroke="url(#accentGrad)" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" />
+</svg>

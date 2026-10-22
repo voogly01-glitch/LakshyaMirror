@@ -14,9 +14,13 @@ import {
   ShieldCheck,
   Award,
   Lock,
-  KeyRound
+  KeyRound,
+  Users,
+  PackageCheck
 } from 'lucide-react';
-import { Exam, ExamSubject, ExamChapter, ExamTopic, Question, ExamTier, ExamStream, MistakeTag } from '../types';
+import { Exam, ExamSubject, ExamChapter, ExamTopic, Question, ExamTier, ExamStream, MistakeTag, StudentUser, CustomPackage } from '../types';
+import { AdminStudentsTab } from './admin/AdminStudentsTab';
+import { AdminPackagesTab } from './admin/AdminPackagesTab';
 
 interface AdminPortalProps {
   exams: Exam[];
@@ -28,6 +32,13 @@ interface AdminPortalProps {
   onAddQuestion: (question: Question) => void;
   onDeleteQuestion: (questionId: string) => void;
   onResetData: () => void;
+  theme?: 'light' | 'dark';
+  students: StudentUser[];
+  onUpdateStudents: (students: StudentUser[]) => void;
+  customPackages: CustomPackage[];
+  onAddCustomPackage: (pkg: CustomPackage) => void;
+  onUpdateCustomPackage: (pkg: CustomPackage) => void;
+  onDeleteCustomPackage: (pkgId: string) => void;
 }
 
 export const AdminPortal: React.FC<AdminPortalProps> = ({
@@ -40,8 +51,16 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
   onAddQuestion,
   onDeleteQuestion,
   onResetData,
+  theme = 'light',
+  students,
+  onUpdateStudents,
+  customPackages,
+  onAddCustomPackage,
+  onUpdateCustomPackage,
+  onDeleteCustomPackage,
 }) => {
-  const [activeAdminTab, setActiveAdminTab] = useState<'questions' | 'curriculum' | 'new_exam' | 'security'>('questions');
+  const isLight = theme === 'light';
+  const [activeAdminTab, setActiveAdminTab] = useState<'students' | 'packages' | 'questions' | 'curriculum' | 'new_exam' | 'security'>('students');
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   // Security PIN states
@@ -246,21 +265,23 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <span className="p-2 rounded-xl bg-purple-500/20 text-purple-300">
+            <span className="p-2 rounded-xl bg-purple-500/20 text-purple-600 dark:text-purple-300">
               <ShieldCheck className="w-5 h-5" />
             </span>
-            <h1 className="text-2xl font-black text-white tracking-tight">
-              Curriculum & Question Bank Admin Portal
+            <h1 className={`text-2xl font-black tracking-tight ${isLight ? 'text-slate-900' : 'text-white'}`}>
+              Admin Control & Student Management
             </h1>
           </div>
-          <p className="text-xs text-slate-400 mt-1">
-            Add new subjects, chapters, topics, PYQs, mock tests, and image-based MCQs dynamically.
+          <p className={`text-xs mt-1 ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>
+            Manage student registrations, customized packages & pricing, curriculum, and question bank.
           </p>
         </div>
 
         <button
           onClick={onResetData}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-rose-900/30 text-slate-300 hover:text-rose-300 text-xs border border-slate-700 transition cursor-pointer"
+          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs border transition cursor-pointer ${
+            isLight ? 'bg-slate-100 hover:bg-rose-50 text-slate-700 hover:text-rose-600 border-slate-300' : 'bg-slate-800 hover:bg-rose-900/30 text-slate-300 hover:text-rose-300 border-slate-700'
+          }`}
           title="Reset to default authentic curriculum and questions"
         >
           <RefreshCw className="w-3.5 h-3.5" />
@@ -270,44 +291,70 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
 
       {/* Success banner */}
       {successMessage && (
-        <div className="p-3 bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 rounded-xl text-xs font-semibold flex items-center gap-2 animate-in fade-in">
+        <div className="p-3 bg-emerald-500/20 border border-emerald-500/40 text-emerald-600 dark:text-emerald-300 rounded-xl text-xs font-semibold flex items-center gap-2 animate-in fade-in">
           <Check className="w-4 h-4" />
           <span>{successMessage}</span>
         </div>
       )}
 
       {/* Admin Nav Tabs */}
-      <div className="flex items-center gap-2 border-b border-slate-800 pb-3 text-xs font-semibold">
+      <div className={`flex items-center gap-2 border-b pb-3 text-xs font-semibold overflow-x-auto no-scrollbar ${
+        isLight ? 'border-slate-200' : 'border-slate-800'
+      }`}>
+        <button
+          onClick={() => setActiveAdminTab('students')}
+          className={`flex items-center gap-2 px-3.5 py-2 rounded-xl transition cursor-pointer whitespace-nowrap ${
+            activeAdminTab === 'students'
+              ? 'bg-indigo-600 text-white shadow-md'
+              : isLight ? 'bg-slate-100 text-slate-600 hover:bg-slate-200' : 'bg-slate-900 text-slate-400 hover:text-white'
+          }`}
+        >
+          <Users className="w-4 h-4" />
+          <span>Students Directory ({students.length})</span>
+        </button>
+
+        <button
+          onClick={() => setActiveAdminTab('packages')}
+          className={`flex items-center gap-2 px-3.5 py-2 rounded-xl transition cursor-pointer whitespace-nowrap ${
+            activeAdminTab === 'packages'
+              ? 'bg-amber-600 text-white shadow-md'
+              : isLight ? 'bg-slate-100 text-slate-600 hover:bg-slate-200' : 'bg-slate-900 text-slate-400 hover:text-white'
+          }`}
+        >
+          <PackageCheck className="w-4 h-4" />
+          <span>Customised Packages ({customPackages.length})</span>
+        </button>
+
         <button
           onClick={() => setActiveAdminTab('questions')}
-          className={`flex items-center gap-2 px-4 py-2 rounded-xl transition ${
+          className={`flex items-center gap-2 px-3.5 py-2 rounded-xl transition cursor-pointer whitespace-nowrap ${
             activeAdminTab === 'questions'
               ? 'bg-indigo-600 text-white shadow-md'
-              : 'bg-slate-900 text-slate-400 hover:text-white'
+              : isLight ? 'bg-slate-100 text-slate-600 hover:bg-slate-200' : 'bg-slate-900 text-slate-400 hover:text-white'
           }`}
         >
           <FileQuestion className="w-4 h-4" />
-          <span>Add Questions & Image MCQs ({allQuestions.length})</span>
+          <span>Question Bank ({allQuestions.length})</span>
         </button>
 
         <button
           onClick={() => setActiveAdminTab('curriculum')}
-          className={`flex items-center gap-2 px-4 py-2 rounded-xl transition ${
+          className={`flex items-center gap-2 px-3.5 py-2 rounded-xl transition cursor-pointer whitespace-nowrap ${
             activeAdminTab === 'curriculum'
               ? 'bg-purple-600 text-white shadow-md'
-              : 'bg-slate-900 text-slate-400 hover:text-white'
+              : isLight ? 'bg-slate-100 text-slate-600 hover:bg-slate-200' : 'bg-slate-900 text-slate-400 hover:text-white'
           }`}
         >
           <FolderPlus className="w-4 h-4" />
-          <span>Add Subject, Chapter & Topics</span>
+          <span>Curriculum Tree</span>
         </button>
 
         <button
           onClick={() => setActiveAdminTab('new_exam')}
-          className={`flex items-center gap-2 px-4 py-2 rounded-xl transition ${
+          className={`flex items-center gap-2 px-3.5 py-2 rounded-xl transition cursor-pointer whitespace-nowrap ${
             activeAdminTab === 'new_exam'
               ? 'bg-emerald-600 text-white shadow-md'
-              : 'bg-slate-900 text-slate-400 hover:text-white'
+              : isLight ? 'bg-slate-100 text-slate-600 hover:bg-slate-200' : 'bg-slate-900 text-slate-400 hover:text-white'
           }`}
         >
           <PlusCircle className="w-4 h-4" />
@@ -316,16 +363,41 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
 
         <button
           onClick={() => setActiveAdminTab('security')}
-          className={`flex items-center gap-2 px-4 py-2 rounded-xl transition ${
+          className={`flex items-center gap-2 px-3.5 py-2 rounded-xl transition cursor-pointer whitespace-nowrap ${
             activeAdminTab === 'security'
               ? 'bg-rose-600 text-white shadow-md'
-              : 'bg-slate-900 text-slate-400 hover:text-white'
+              : isLight ? 'bg-slate-100 text-slate-600 hover:bg-slate-200' : 'bg-slate-900 text-slate-400 hover:text-white'
           }`}
         >
           <Lock className="w-4 h-4" />
-          <span>Admin Security & PIN</span>
+          <span>Master PIN</span>
         </button>
       </div>
+
+      {/* TAB: STUDENTS DIRECTORY & MANAGEMENT */}
+      {activeAdminTab === 'students' && (
+        <AdminStudentsTab
+          students={students}
+          onUpdateStudents={onUpdateStudents}
+          exams={exams}
+          customPackages={customPackages}
+          theme={theme}
+          showFlash={showFlash}
+        />
+      )}
+
+      {/* TAB: CUSTOM PACKAGES MANAGER */}
+      {activeAdminTab === 'packages' && (
+        <AdminPackagesTab
+          customPackages={customPackages}
+          onAddCustomPackage={onAddCustomPackage}
+          onUpdateCustomPackage={onUpdateCustomPackage}
+          onDeleteCustomPackage={onDeleteCustomPackage}
+          exams={exams}
+          theme={theme}
+          showFlash={showFlash}
+        />
+      )}
 
       {/* TAB 1: ADD QUESTION & TEST BANK */}
       {activeAdminTab === 'questions' && (

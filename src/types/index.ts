@@ -142,3 +142,81 @@ export interface LeaderboardEntry {
   majorTestScore: number;
   isCurrentUser?: boolean;
 }
+
+export type SubscriptionTier = 'free' | 'monthly' | 'target6m' | 'annual' | 'custom';
+
+export interface SubscriptionPlan {
+  id: SubscriptionTier | string;
+  name: string;
+  hindiBadge: string;
+  tagline: string;
+  priceINR: number;
+  originalPriceINR: number;
+  durationLabel: string;
+  perMonthLabel: string;
+  popular?: boolean;
+  badge?: string;
+  features: string[];
+  unlockCount: string;
+  isCustom?: boolean;
+  targetExamId?: string;
+}
+
+export interface CustomPackage {
+  id: string;
+  name: string;
+  hindiBadge: string;
+  tagline: string;
+  priceINR: number;
+  originalPriceINR: number;
+  durationDays: number;
+  durationLabel: string;
+  targetExamId: string; // 'all' or exam ID like 'exam-neet-ug'
+  features: string[];
+  isActive: boolean;
+  badge?: string;
+  enrolledStudents: number;
+  createdAt: string;
+  allowMockTests?: boolean;
+  allowWeaknessRadar?: boolean;
+  allowPyqArchive?: boolean;
+  allowPdfDossier?: boolean;
+  allowWhatsAppSupport?: boolean;
+}
+
+export interface StudentUser {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  targetExamId: string;
+  targetYear: string;
+  state: string;
+  category?: 'General' | 'OBC' | 'SC' | 'ST' | 'EWS';
+  avatar: string;
+  isLoggedIn: boolean;
+  registeredAt: string;
+  testsCompletedCount: number;
+  averageAccuracy: number;
+  studyMinutes: number;
+  streakDays: number;
+  subscriptionPlanId: string;
+  subscriptionPlanName?: string;
+  subscriptionTier: string;
+  subscriptionExpiry: string;
+  notes?: string;
+}
+
+export interface UserSubscription {
+  tier: SubscriptionTier | string;
+  isActive: boolean;
+  validUntil: string;
+  planName: string;
+  transactionId?: string;
+  paymentMethod?: 'UPI' | 'PhonePe' | 'GPay' | 'Paytm' | 'Card' | 'NetBanking' | 'AdminGrant';
+  discountApplied?: number;
+  packageId?: string;
+}
+
+export type ThemeMode = 'light' | 'dark';
+
